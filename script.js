@@ -1,6 +1,7 @@
 document.onkeydown = function(e){
     console.log("key = " + e.keyCode);
     // Game Variables
+    var Cmove = false;
     // Variable Elements & Position
     var ninja = document.querySelector(".ninja");
     var carnage = document.querySelector(".carnage");
@@ -23,7 +24,7 @@ document.onkeydown = function(e){
 
     // Carnage & Ninja Controls
     // ninja controls
-    if(e.keyCode == 81 && Nhealth_width > 0){
+    if(e.keyCode == 81 && Nhealth_width > 1 && Chealth_width > 1){
         if(ninja.classList == "ninja_punch"){return};
         ninja.classList.add("ninja_punch");
         ninja_punch = true;
@@ -32,7 +33,7 @@ document.onkeydown = function(e){
             ninja_punch = false;
         },300);
     }
-    if(e.keyCode == 87 && Nhealth_width > 0){
+    if(e.keyCode == 87 && Nhealth_width > 1 && Chealth_width > 1){
         if(ninja.classList == "ninja_kick"){return}
         ninja.classList.add("ninja_kick");
         ninja_kick = true;
@@ -41,7 +42,7 @@ document.onkeydown = function(e){
             ninja_kick = false;
         },300)
     }
-    if(e.keyCode == 38 && Nhealth_width > 0){
+    if(e.keyCode == 38 && Nhealth_width > 1 && Chealth_width > 1){
         if(ninja.classList =="ninja_spilt"){return};
         ninja.classList.add("ninja_spilt");
         ninja_spilt = true;
@@ -50,10 +51,10 @@ document.onkeydown = function(e){
             ninja_spilt = false;
         },300)
     }
-    if(e.keyCode == 37 && Nhealth_width > 1){
+    if(e.keyCode == 37 && Nhealth_width > 1 && Chealth_width > 1){
         ninja.style.left = ninjaX - 50 + "px";
     }
-    if(e.keyCode == 39 && Nhealth_width > 1){
+    if(e.keyCode == 39 && Nhealth_width > 1 && Chealth_width > 1){
         ninja.style.left = ninjaX + 50 + "px";
     }
 
@@ -61,10 +62,24 @@ document.onkeydown = function(e){
     if(carnagemove = true){
     carnage.style.left = ninjaX + "px";
     }
-    carnage_punch = true;
-    carnage_kick = true;
-    carnage_spilt = true;
+    if(Chealth_width > 1 && Nhealth_width > 1){
+        Cmove = true;
+    }
+    if(Cmove == true){
+        var randomMove = Math.floor(Math.random() * 4);
+        if(randomMove == 1){
+            carnage_punch = true;
+        }
+        if(randomMove == 2){
+            carnage_kick = true;
+        }
+        if(randomMove == 3){
+            carnage_spilt = true;
+        }
+    }
+
     console.log(ninjaX);
+    console.log(Nhealth_width);
     
     setInterval(() => { 
     // carnage touches ninja
@@ -93,46 +108,49 @@ document.onkeydown = function(e){
         },1000);
     }
     if(carnageX == ninjaX && carnage_punch == true){
-        Nhealth_width-=1;
+        Nhealth_width-=3;
         Nhealth.style.width = Nhealth_width + "px";
     }
     if(carnageX == ninjaX && carnage_kick == true){
-        Nhealth_width-=2;
+        Nhealth_width-=4;
         Nhealth.style.width = Nhealth_width + "px";
     }
     if(carnageX == ninjaX && carnage_spilt == true){
         ninja.style.left = ninjaX - 10 + "px";
-        Nhealth_width-=3;
+        Nhealth_width-=5;
         Nhealth.style.width = Nhealth_width + "px";
     }
     // ninja touches carnage
     if(carnageX == ninjaX && ninja_punch == true){
-        Chealth_width-=3;
+        Chealth_width-=2;
         Chealth.style.width = Chealth_width + "px";
+        carnage.style.left = carnageX + 10 + "px";
     }
     if(carnageX == ninjaX && ninja_kick == true){
         Chealth_width-=3;
         Chealth.style.width = Chealth_width + "px";
+        carnage.style.left = carnageX + 10 + "px";
     }
     if(carnageX == ninjaX && ninja_spilt == true){
-        Chealth_width-=7;
+        Chealth_width-=4;
         Chealth.style.width = Chealth_width + "px";
+        carnage.style.left = carnageX + 10 + "px";
     }
     if(Chealth_width < 50){
         if(carnageX == ninjaX && ninja_punch == true){
-            Chealth_width-=3;
+            Chealth_width-=1;
             Chealth.style.width = Chealth_width + "px";
-            carnage.style.left = carnageX + 1000 + "px";
+            carnage.style.left = carnageX + 10 + "px";
         }
         if(carnageX == ninjaX && ninja_kick == true){
-            Chealth_width-=3;
+            Chealth_width-=2;
             Chealth.style.width = Chealth_width + "px";
-            carnage.style.left = carnageX + 1000 + "px";
+            carnage.style.left = carnageX + 10 + "px";
         }
         if(carnageX == ninjaX && ninja_spilt == true){
-            Chealth_width-=6;
+            Chealth_width-=3;
             Chealth.style.width = Chealth_width + "px";
-            carnage.style.left = carnageX + 1000 + "px";
+            carnage.style.left = carnageX + 10 + "px";
         }
     }
   }, 200);
@@ -153,6 +171,7 @@ if(carnageX < 0){
         carnage_punch = false;
         carnage_kick = false;
         carnage_spilt = false;
+        Cmove = false;
         carnage.classList.add("carnage_die");
         carnage.style.left = carnageX + "px";
         carnagemove = false;
